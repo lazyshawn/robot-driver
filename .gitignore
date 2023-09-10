@@ -1,0 +1,9 @@
+.cache
+.clangd
+build
+data
+debug
+lib
+
+compile_commands.json
+.vimspector.json
