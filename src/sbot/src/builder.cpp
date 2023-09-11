@@ -61,7 +61,12 @@ void Builder::send_command_queue(const std::vector<std::vector<double>>& jointQu
 }
 
 void Builder::read_status(std::vector<double>& joint) {
-  httplib::Result res = httpCli->Post("/query/robot_pos");
+  std::string postData = "{\"poseType\":1}";
+  httplib::Result res = httpCli->Post("/query/robot_pos", postData.c_str(), "application/json");
   std::cout << res->body << std::endl;
+  if (!(res->status == 200)) {
+    printf("Warning: # Builder::read_status: Post failed.\n");
+    return;
+  }
 }
 
