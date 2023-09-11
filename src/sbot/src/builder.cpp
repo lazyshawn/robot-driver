@@ -12,15 +12,18 @@ Builder::Builder() {
   json["robots"][0]["servo_state"] = std::vector<double>(2,0.0);
 
   // 匿名注册客户端
-  cli = std::make_shared<mqtt::async_client>(serverAddr, "");
-  cli->connect()->wait();
+  mqttCli = std::make_shared<mqtt::async_client>(serverAddr, "");
+  mqttCli->connect()->wait();
   std::cout << "Connected to MQTT server: " << serverAddr << std::endl;
+
+  // HTTP 客户端初始化
+  httpCli = std::make_shared<httplib::Client>("localhost", 9000);
 }
 
 Builder::~Builder() {
   // Disconnect
   std::cout << "Disconnecting..." << std::endl;
-  cli->disconnect()->wait();
+  mqttCli->disconnect()->wait();
   std::cout << "  ...OK" << std::endl;
 }
 
@@ -30,7 +33,7 @@ void Builder::send_command(const std::vector<double>& joint) {
   std::cout << json.dump(0) << std::endl;
 
   try {
-    mqtt::topic top(*cli, TOPIC.c_str(), QOS);
+    mqtt::topic top(*mqttCli, TOPIC.c_str(), QOS);
     mqtt::token_ptr tok;
     tok = top.publish(json.dump());
     // Just wait for the last one to complete.
@@ -43,7 +46,7 @@ void Builder::send_command(const std::vector<double>& joint) {
 
 void Builder::send_command_queue(const std::vector<std::vector<double>>& jointQueue) {
   try {
-    mqtt::topic top(*cli, TOPIC.c_str(), QOS);
+    mqtt::topic top(*mqttCli, TOPIC.c_str(), QOS);
     mqtt::token_ptr tok;
     for (auto& joint : jointQueue) {
       json["robots"][0]["joint_state"] = joint;
@@ -58,5 +61,7 @@ void Builder::send_command_queue(const std::vector<std::vector<double>>& jointQu
 }
 
 void Builder::read_status(std::vector<double>& joint) {
+  httplib::Result res = httpCli->Post("/query/robot_pos");
+  std::cout << res->body << std::endl;
 }
 

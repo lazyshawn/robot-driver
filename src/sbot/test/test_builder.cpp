@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <httplib.h>
 
 #include "sbot/builder.h"
 
