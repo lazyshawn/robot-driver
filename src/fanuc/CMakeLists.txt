@@ -10,3 +10,6 @@ target_include_directories(fanuc-driver PUBLIC
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
+target_link_libraries(fanuc-driver PUBLIC
+  utils_socket
+)
