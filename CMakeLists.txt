@@ -1,35 +1,26 @@
 cmake_minimum_required(VERSION 3.15)
-project(RobotDriver)
-
-set(CMAKE_CXX_STANDARD 17)
-# Support degug
-SET(CMAKE_CXX_FLAGS_DEBUG "$ENV{CXXFLAGS} -O0 -Wall -g2 -ggdb")
-
-SET(CMAKE_BUILD_TYPE "Debug")
-option(ENABLE_TEST "Build test" ON)
-
-if(WIN32)
-  # create symbol for exporting lib for dynmic library
-  SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-  # control where the static and shared libraries are built so that on windows
-  # we don't need to tinker with the path to run the executable
-  set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
-  set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
-  set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
-  # Build static in windows
-  option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
-  # Set the runtime lib for MSCV (global)
-  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+if(PROJECT_IS_TOP_LEVEL)
+  include(TopCmakeConfig)
 else()
-  option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
+  set(EXPORT_CMAKE_PACKAGE OFF)
 endif()
 
+project(RobotDriver VERSION 1.0.0)
+
+# Set deault build type
+if (NOT CMAKE_BUILD_TYPE OR CMAKE_BUILD_TYPE STREQUAL "")
+  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
+endif()
 # Set the installation directory
 SET(CMAKE_INSTALL_PREFIX "${PROJECT_BINARY_DIR}/out/${PROJECT_NAME}-${CMAKE_BUILD_TYPE}")
 
+option(ENABLE_TEST "Enable GoogleTest" ON)
+add_compile_definitions(PRINT_DEBUG_LOG)
+
 if(ENABLE_TEST)
   include(CTest)
-  find_package(GTest)
+  find_package(GTest REQUIRED)
   include(GoogleTest)
 endif()
 
