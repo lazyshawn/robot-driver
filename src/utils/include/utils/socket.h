@@ -6,7 +6,7 @@
 #ifdef WIN32
 #include <winsock2.h>
 // Need to link with Ws2_32.lib
-#pragram comment(lib, "Ws2_32.lib")
+#pragma comment(lib, "Ws2_32.lib")
 #else
 #include <arpa/inet.h>
 #include <sys/ioctl.h>

@@ -18,7 +18,6 @@ find_package(nolhmann-json PATHS ${CMAKE_SOURCE_DIR}/lib)
 find_package(PahoMqttCpp PATHS ${CMAKE_SOURCE_DIR}/lib REQUIRED)
 target_link_libraries(sbot_builder PUBLIC
   PahoMqttCpp::paho-mqttpp3
-  httplib
 )
 
 
