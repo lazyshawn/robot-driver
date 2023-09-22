@@ -13,7 +13,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #endif
-// bzero
+// bzero, memset
 #include <string.h>
 
 int create_socket_client(std::string ip, size_t port, long int delayMs = 0);

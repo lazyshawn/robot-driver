@@ -1,5 +1,5 @@
 #include "driver_core.h"
-// bzero
+// bzero, memset
 #include <string.h>
 
 const double pi = 3.1415926535897932384626433832795028841971693993751058209;
@@ -112,7 +112,7 @@ int read_socket() {
 
   // * 接受 socket 信息
   char statusrecvbuf[512] = {};
-  bzero(statusrecvbuf, sizeof(statusrecvbuf));
+  memset(statusrecvbuf, 0, sizeof(statusrecvbuf));
   int recv_size = 28 + 6 * 8;
   if (recv(clientFd, statusrecvbuf, recv_size, 0) <= 0) {
     printf("status client recv fail: %s\n", robot_ip.c_str());
@@ -171,7 +171,7 @@ int create_socket(std::string ip, size_t port) {
 
   sockaddr_in targetAddr;
   // * 设置 sockaddr_in 结构体
-  bzero(&targetAddr, sizeof(targetAddr));
+  memset(&targetAddr, 0, sizeof(targetAddr));
   targetAddr.sin_family = AF_INET;
   targetAddr.sin_port = htons(port);
   targetAddr.sin_addr.s_addr = inet_addr(ip.c_str());

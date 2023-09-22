@@ -4,21 +4,39 @@
 #include <nlohmann/json.hpp>
 #include <httplib.h>
 
+#include "utils/interpolate.h"
+
 class Builder {
 private:
   // MQTT clinet
   std::shared_ptr<mqtt::async_client> mqttCli;
   std::string TOPIC, serverAddr;
-  const int QOS = 1;
+  const int QOS = 0;
   nlohmann::json json;
+
   // HTTP client
   std::shared_ptr<httplib::Client> httpCli;
+
+  // Servo settings
+  std::chrono::duration<double, std::milli> circleTime;
+  uint8_t servoStatus;
 
 public:
   Builder();
   ~Builder();
 
-  void send_command(const std::vector<double>& joint);
-  void send_command_queue(const std::vector<std::vector<double>>& jointQueue);
-  void read_status(std::vector<double>& joint);
+  /* 
+  * @brief : 设定机械臂关节角状态，立即变换到该状态
+  * @param : jointState
+  * @return: 
+  */
+  void set_joint_state(const std::vector<double>& jointState);
+  bool read_joint_state(std::vector<double>& joint);
+  /* 
+  * @brief : moveJ，发送插值的关节角
+  * @param : endJoint - 目标关节角
+  * @param : velocity - 最大关节速度, rad/s
+  * @return: 
+  */
+  void moveJ(const std::vector<double>& endJoint, double velocity);
 };

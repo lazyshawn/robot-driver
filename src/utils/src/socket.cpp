@@ -5,7 +5,7 @@ int create_socket_client(std::string ip, size_t port, long int delayMs) {
 
   sockaddr_in targetAddr;
   // * 设置 sockaddr_in 结构体
-  bzero(&targetAddr, sizeof(targetAddr));
+  memset(&targetAddr, 0, sizeof(targetAddr));
   targetAddr.sin_family = AF_INET;
   targetAddr.sin_port = htons(port);
   targetAddr.sin_addr.s_addr = inet_addr(ip.c_str());
@@ -36,7 +36,7 @@ int create_socket_server(std::string ip, size_t port) {
 
   sockaddr_in targetAddr;
   // * 设置 sockaddr_in 结构体
-  bzero(&targetAddr, sizeof(targetAddr));
+  memset(&targetAddr, 0, sizeof(targetAddr));
   targetAddr.sin_family = AF_INET;
   targetAddr.sin_port = htons(port);
   targetAddr.sin_addr.s_addr = inet_addr(ip.c_str());

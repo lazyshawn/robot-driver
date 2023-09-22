@@ -20,6 +20,18 @@ if(ENABLE_TEST)
   gtest_discover_tests(main)
 endif()
 
+add_library(utils_interpolate
+  src/interpolate.cpp
+)
+
+# Usage requirement of lib
+target_include_directories(utils_interpolate PUBLIC
+  # include directory in your build tree
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  # include directory when installed
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
 ###############################################################################
 # Install package
 ###############################################################################
@@ -31,7 +43,7 @@ install(DIRECTORY include/utils
 # We add `yourlibrary` target into the export set.
 # The export set will contain all targets to be imported by the other project.
 # It also installs the library to the install script so they are installed:
-set(utils_libs utils_socket)
+set(utils_libs utils_socket utils_interpolate)
 install(TARGETS ${utils_libs} EXPORT RobotDriverTargets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
