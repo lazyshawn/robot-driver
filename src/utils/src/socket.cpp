@@ -26,7 +26,7 @@ int create_socket_client(std::string ip, size_t port, long int delayMs) {
     clientFd = -1;
   }
 
-  printf("Info: # create_socket_client(): connected to %s, %zd.\n", ip.c_str(), port);
+  printf("Info: # create_socket_client(): connected to %s: %zd.\n", ip.c_str(), port);
   return clientFd;
 }
 
@@ -51,6 +51,6 @@ int create_socket_server(std::string ip, size_t port) {
     printf("Error: # create_socket_server(): listen failed. ");
   }
 
-  printf("Info: # create_socket_server(): waiting for connection to %s, %zd ...\n", ip.c_str(), port);
+  printf("Info: # create_socket_server(): waiting for connection to %s: %zd ...\n", ip.c_str(), port);
   return serverFd;
 }

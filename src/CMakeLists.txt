@@ -6,7 +6,7 @@ SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib:\${ORIGIN}/../lib:${CMAKE_S
 include(GNUInstallDirs)
 
 add_subdirectory(utils)
-# add_subdirectory(fanuc)
+add_subdirectory(fanuc)
 add_subdirectory(sbot)
 
 

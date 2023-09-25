@@ -1,7 +1,5 @@
 #pragma once
 
-#include <iostream>
-
 // socket 通信
 #ifdef WIN32
 #include <winsock2.h>
@@ -15,6 +13,8 @@
 #endif
 // bzero, memset
 #include <string.h>
+
+#include <string>
 
 int create_socket_client(std::string ip, size_t port, long int delayMs = 0);
 int create_socket_server(std::string ip, size_t port);

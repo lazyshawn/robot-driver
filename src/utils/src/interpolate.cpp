@@ -1,5 +1,4 @@
 #include "utils/interpolate.h"
-#include <iostream>
 
 std::vector<std::vector<double>> get_linear_interpolate(const std::vector<double>& begPnt, const std::vector<double>& endPnt, double maxStep) {
   // 关节自由度
@@ -32,16 +31,5 @@ std::vector<std::vector<double>> get_linear_interpolate(const std::vector<double
   res[numStep] = curJnt;
 
   return res;
-}
-
-int main(int argc, char** argv) {
-  std::vector<std::vector<double>> res = get_linear_interpolate({0,0,0}, {3,4,5}, 1);
-  for (size_t i=0; i<res.size(); ++i) {
-    for (auto n : res[i]) {
-      std::cout << n << ", ";
-    }
-    std::cout << std::endl;
-  }
-  return 0;
 }
 
