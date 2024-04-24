@@ -31,7 +31,12 @@ Builder::~Builder() {
 }
 
 void Builder::set_joint_state(const std::vector<double> &joint) {
-  json["robots"][0]["joint_state"] = joint;
+  std::vector<double> targetJoint = joint;
+  // 转为几何关节角
+  if (jointCouple) {
+    targetJoint[2] += targetJoint[1];
+  }
+  json["robots"][0]["joint_state"] = targetJoint;
 
   try {
     mqtt::topic top(*mqttCli, TOPIC.c_str(), QOS);
@@ -46,8 +51,7 @@ void Builder::set_joint_state(const std::vector<double> &joint) {
 
 bool Builder::read_joint_state(std::vector<double> &joint) {
   std::string postData = "{\"poseType\":1}";
-  httplib::Result res =
-      httpCli->Post("/query/robot_pos", postData.c_str(), "application/json");
+  httplib::Result res = httpCli->Post("/query/robot_pos", postData.c_str(), "application/json");
   nlohmann::json resJson = nlohmann::json::parse(res->body);
 
   if (!(res->status == 200)) {
@@ -61,10 +65,6 @@ bool Builder::read_joint_state(std::vector<double> &joint) {
     joint.reserve(7);
     while (getline(in, tmp, ',')) {
       joint.push_back(std::stod(tmp));
-    }
-    // 处理耦合
-    if (jointCouple) {
-      joint[2] += joint[1];
     }
   }
   return true;
@@ -99,6 +99,10 @@ void Builder::moveJ(const std::vector<double> &endJoint, double velocity) {
       }
       stamp = cur + circleTime;
 
+      // 转为几何关节角
+      if (jointCouple) {
+        viaPoint[i][2] += viaPoint[i][1];
+      }
       // Do servo things
       json["robots"][0]["joint_state"] = viaPoint[i];
       tok = top.publish(json.dump());

@@ -28,22 +28,24 @@ public:
   Builder();
   ~Builder();
 
-  /* 
-  * @brief : 设定机械臂关节角状态，立即变换到该状态
+  /**
+  * @brief : 设定机械臂关节角状态，立即变换到该状态 (实际关节角)
+  *          Builder 中直接设定的为几何关节角
   * @param : jointState (deg)
   * @return: 
   */
   void set_joint_state(const std::vector<double>& jointState);
-  /* 
-  * @brief : 读取当前关节位置
+  /**
+  * @brief : 读取当前关节位置 (实际关节角)
+  *          Builder 中直接读取的为实际关节角
   * @param : joint - 输出关节角 (deg)
   * @return: 
   */
   bool read_joint_state(std::vector<double>& joint);
-  /* 
-  * @brief : moveJ，发送插值的关节角
+  /**
+  * @brief : moveJ，发送插值的关节角 (实际关节角)
   * @param : endJoint - 目标关节角 (deg)
-  * @param : velocity - 最大关节速度 (rad/s)
+  * @param : velocity - 最大关节速度 (deg/s)
   * @return: 
   */
   void moveJ(const std::vector<double>& endJoint, double velocity);

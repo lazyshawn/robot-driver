@@ -1,4 +1,8 @@
 #include "fanuc/eip_driver.h"
+#include <iostream>
+
+int list_device();
+int implicit_messaging();
 
 using namespace eipScanner::cip;
 using eipScanner::ConnectionManager;
@@ -10,33 +14,57 @@ using eipScanner::utils::Buffer;
 using eipScanner::utils::Logger;
 using eipScanner::utils::LogLevel;
 
+const std::string ip = "192.168.1.12";
+const int port = 0xAF12;
+
 int main(int argc, char **argv) {
+  list_device();
+  implicit_messaging();
+}
+
+int list_device() {
+  Logger::setLogLevel(LogLevel::DEBUG);
+
+  eipScanner::DiscoveryManager discoveryManager(ip.c_str(), port, std::chrono::seconds(1));
+  auto devices = discoveryManager.discover();
+
+  for (auto& device : devices) {
+    Logger(LogLevel::INFO) << "Discovered device: "
+      << device.identityObject.getProductName()
+      << " with address " << device.socketAddress.toString();
+  }
+  return EXIT_SUCCESS;
+}
+
+int implicit_messaging() {
   Logger::setLogLevel(LogLevel::DEBUG);
   // 创建会话
-  auto si = std::make_shared<SessionInfo>("192.168.20.10", 0xAF12);
+  auto si = std::make_shared<SessionInfo>(ip.c_str(), port);
 
   // Implicit messaging
   ConnectionManager connectionManager;
 
   ConnectionParameters parameters;
-  parameters.connectionPath = { 0x20, 0x04, 0x24, 0x64, 0x2C, 0x97,  0x2C, 0x65}; // config Assm151, output Assm150, intput Assm100
+  // config AssmXXX, output AssmXXX, input AssmXXX
+  parameters.connectionPath = { 0x20, 0x04, 0x24, 0x6A, 0x2C, 0x68,  0x2C, 0x69};
   parameters.o2tRealTimeFormat = true;
   parameters.originatorVendorId = 0x1234;
   parameters.originatorSerialNumber = 0x12345678;
   parameters.t2oNetworkConnectionParams |= NetworkConnectionParams::P2P;
   parameters.t2oNetworkConnectionParams |= NetworkConnectionParams::SCHEDULED_PRIORITY;
-  parameters.t2oNetworkConnectionParams |= 32; // size of Assm100 =32
+  parameters.t2oNetworkConnectionParams |= 32; // size of Assm100 = 32
   parameters.o2tNetworkConnectionParams |= NetworkConnectionParams::P2P;
   parameters.o2tNetworkConnectionParams |= NetworkConnectionParams::SCHEDULED_PRIORITY;
   parameters.o2tNetworkConnectionParams |= 32; // size of Assm150 = 32
 
   parameters.originatorSerialNumber = 0x12345678;
-  parameters.o2tRPI = 1000000;
-  parameters.t2oRPI = 1000000;
+  parameters.o2tRPI = 10000;
+  parameters.t2oRPI = 10000;
   parameters.transportTypeTrigger |= NetworkConnectionParams::CLASS1;
-  parameters.connectionTimeoutMultiplier = 5; // 128
+  parameters.connectionTimeoutMultiplier = 4;
 
   auto io = connectionManager.forwardOpen(si, parameters);
+  std::cout << "forwardOpen success." << std::endl;
   if (auto ptr = io.lock()) {
     // ptr->setDataToSend(std::vector<uint8_t>(32));
 

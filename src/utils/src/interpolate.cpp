@@ -12,7 +12,7 @@ std::vector<std::vector<double>> get_linear_interpolate(const std::vector<double
     maxDiff = std::max(std::fabs(jntDiff[i]), maxDiff);
   }
 
-  // 步数向下取整
+  // 步数向上取整
   size_t numStep = std::ceil(maxDiff/maxStep);
   // 每个关节的步长
   for (size_t i=0; i<dof; ++i) {

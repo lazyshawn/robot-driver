@@ -11,7 +11,7 @@ target_include_directories(sbot_builder PUBLIC
 )
 
 #find PahoMqttCpp
-list(APPEND CMAKE_PREFIX_PATH "/home/shawn/Desktop/mqtt/eclipse-paho-mqtt-c")
+list(APPEND CMAKE_PREFIX_PATH "/home/shawn/Desktop/gitpro/robot-driver/lib/PahoMqttC")
 # list(APPEND CMAKE_PREFIX_PATH "../lib")
 # find_package(eclipse-paho-mqtt-c PATHS ${CMAKE_SOURCE_DIR}/lib)
 find_package(nolhmann-json PATHS ${CMAKE_SOURCE_DIR}/lib)
